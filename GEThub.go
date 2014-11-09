@@ -64,11 +64,26 @@ func main() {
 		for _, commit := range comms {
 			m := *commit.Commit.Message
 			brief := strings.Split(m, "\n")[0]
-			messages = append(messages, brief)
+			// we don't care for merge's they are boring.
+			if strings.Contains(brief, "merge") {
+				continue
+			} else if strings.Contains(brief, "Merge") {
+				continue
+			} else {
+				brief = strings.Replace(brief, "\"", "'", -1)
+				messages = append(messages, brief)
+			}
 		}
 	}
 
-	for _, m := range messages {
-		fmt.Println(m)
+	fmt.Print("{\"100\":")
+	for i, m := range messages {
+		if i < 1 {
+			fmt.Print("[\"" + m + "\"")
+		} else {
+			fmt.Print(",\"" + m + "\"")
+		}
 	}
+	fmt.Print("]}")
+
 }
